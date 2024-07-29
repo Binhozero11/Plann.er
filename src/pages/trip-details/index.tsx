@@ -24,10 +24,10 @@ export function TripDetailsPage() {
             <main className="flex flex-col gap-10 px-4 md:gap-16 lg:flex-row">
                 <div className="flex-1 space-y-6">
                     <div className="flex flex-col gap-4 sm:gap-0 sm:justify-between sm:flex-row sm:items-center">
-                        <h2 className="text-3xl text-center font-semibold sm:text-left">Atividades</h2>
+                        <h2 className="select-none text-3xl text-center font-semibold sm:text-left">Atividades</h2>
                         <button
                         onClick={openCreateActivityModal}
-                        className='bg-lime-300 text-lime-950 rounded-lg px-5 py-2 font-medium flex items-center gap-2 justify-center hover:bg-lime-400'>
+                        className='select-none bg-lime-300 text-lime-950 rounded-lg px-5 py-2 font-medium flex items-center gap-2 justify-center hover:bg-lime-400'>
                             <Plus className='size-5' />
                             Cadastrar atividade
                         </button>

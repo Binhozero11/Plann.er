@@ -13,6 +13,7 @@ interface Activities {
         id: string
         title: string
         occurs_at: string
+        description: string
     }[]
 }
 
@@ -24,10 +25,10 @@ export function Activities() {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
     const [selectedActivity, setSelectedActivity] = useState<string | null>(null)
     const [actionType, setActionType] = useState<'complete' | 'incomplete' | null>(null)
+    const [expandedActivity, setExpandedActivity] = useState<string | null>(null);
 
     useEffect(() => {
-        api.get(`/trips/${tripId}/activities`).then(response => setActivities(response.data.activities)
-        )
+        api.get(`/trips/${tripId}/activities`).then(response => setActivities(response.data.activities))
     }, [tripId])
 
     function toggleActivityCompletion(activityId: string) {
@@ -40,6 +41,11 @@ export function Activities() {
     function deleteActivity(activityId: string) {
         setSelectedActivity(activityId);
         setIsDeleteModalOpen(true);
+    }
+
+    function toggleActivityDescription(activityId: string) {
+        setSelectedActivity(activityId);
+        setExpandedActivity(prev => prev === activityId ? null : activityId)
     }
 
     async function handleConfirmDelete() {
@@ -96,6 +102,7 @@ export function Activities() {
     return (
         <div className="space-y-8">
             {activities.map(category => {
+                
                 return (
                     <div key={category.date} className="space-y-2.5">
                         <div className="flex gap-2 items-baseline">
@@ -106,24 +113,37 @@ export function Activities() {
                             <div>
                                 {category.activities.map(activity => {
                                     const isCompleted = completedActivities.has(activity.id);
+                                    const isExpanded = expandedActivity === activity.id;
                                     return (
                                         <div key={activity.id} className="space-y-2.5">
-                                            <div className="my-2 px-4 py-2.5 bg-zinc-900 rounded-xl shadow-shape flex items-center gap-3">
-                                                <div onClick={() => toggleActivityCompletion(activity.id)}>
-                                                    {isCompleted ? (
-                                                        <CircleCheck className="size-5 text-lime-300" />
-                                                    ) : (
-                                                        <CircleDashed className="text-zinc-400 size-5 shrink-0" />
-                                                    )}
+                                            <div className="my-2 bg-zinc-900 rounded-xl shadow-shape flex flex-col">
+                                                <div className=" px-4 py-2.5 bg-zinc-900 rounded-xl flex items-center gap-3">
+                                                    <div title="Marcar como concluído" onClick={() => toggleActivityCompletion(activity.id)}>
+                                                        {isCompleted ? (
+                                                            <CircleCheck className="size-5 text-lime-300 cursor-pointer" />
+                                                        ) : (
+                                                            <CircleDashed className="text-zinc-400 size-5 shrink-0 cursor-pointer" />
+                                                        )}
+                                                    </div>
+                                                    
+                                                    <div title="Ver descrição" className="cursor-pointer" onClick={() => toggleActivityDescription(activity.id)}>
+                                                        <span className="select-none flex-1 text-zinc-100">{activity.title}</span>
+                                                    </div>
+                                                    <span className="text-zinc-400 text-sm ml-auto">{format(activity.occurs_at, 'HH:mm')}h</span>
+                                                    <button title="Apagar atividade" type='button' onClick={() => deleteActivity(activity.id)}>
+                                                        <X className='size-5 text-zinc-400' />
+                                                    </button>
                                                 </div>
-                                                
-                                                <span className="flex-1 text-zinc-100">{activity.title}</span>
-
-                                                <span className="text-zinc-400 text-sm ml-auto">{format(activity.occurs_at, 'HH:mm')}h</span>
-
-                                                <button type='button' onClick={() => deleteActivity(activity.id)}>
-                                                    <X className='size-5 text-zinc-400' />
-                                                </button>
+                                                {isExpanded && (
+                                                    <div className="px-4 py-2 text-zinc-400">
+                                                        {/* Substitua o texto abaixo pelo botão de criar descrição caso não tenha e caso tenha exiba ela em vez do botão  */}
+                                                        {activity.description !== null ? (
+                                                            activity.description
+                                                        ) : (
+                                                            <p className="text-zinc-500 text-sm">Nenhuma descrição disponível</p>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     )

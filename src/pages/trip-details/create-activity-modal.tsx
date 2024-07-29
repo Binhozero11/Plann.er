@@ -1,4 +1,4 @@
-import { Calendar, Tag, X } from "lucide-react"
+import { Calendar, NotebookPen, Tag, X } from "lucide-react"
 import { Button } from "../../components/button"
 import { FormEvent } from "react"
 import { api } from "../../lib/axios"
@@ -20,11 +20,12 @@ export function CreateActivityModal({
     
         const title = data.get('title')?.toString()
         const occurs_at = data.get('occurs_at')?.toString()
-        
+        const description = data.get('description')?.toString()
         
         await api.post(`/trips/${tripId}/activities`, {
             title,
             occurs_at,
+            description,
         })
 
         window.document.location.reload()
@@ -58,6 +59,14 @@ export function CreateActivityModal({
                                 <input 
                                 name='title' 
                                 placeholder="Qual a atividade?" className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1" 
+                                />
+                            </div>
+
+                            <div className='h-14 px-4 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center gap-2'>
+                                <NotebookPen className='text-zinc-400 size-5' />
+                                <input 
+                                name='description' 
+                                placeholder="Descrição da atividade" className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1" 
                                 />
                             </div>
             
