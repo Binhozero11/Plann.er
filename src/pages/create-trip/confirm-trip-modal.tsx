@@ -80,7 +80,7 @@ export function ConfirmTripModal({
                 </Button>
               ) : (
                 <Button disabled={isGuestInputOpen} variant="secondary" size="full">
-                  Insira as informações restantes
+                  Insira as informações corretamente
                 </Button>
               )}
 

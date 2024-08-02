@@ -38,7 +38,7 @@ export function DeleteActivity({
                 </p>
                 <div className='flex justify-between gap-3'>
                     <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
-                    <Button variant="alert" onClick={onConfirm}>Confirmar</Button>
+                    <Button variant="alert" onClick={onConfirm}>Excluir</Button>
                 </div>
             </div>
         </div>

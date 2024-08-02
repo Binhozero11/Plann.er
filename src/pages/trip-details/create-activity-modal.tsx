@@ -1,6 +1,6 @@
 import { Calendar, NotebookPen, Tag, X } from "lucide-react"
 import { Button } from "../../components/button"
-import { FormEvent } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { api } from "../../lib/axios"
 import { useParams } from "react-router-dom"
 
@@ -8,29 +8,83 @@ interface CreateActivityModalProps {
     closeCreateActivityModal: () => void
 }
 
+interface Trip {
+    starts_at: string,
+    ends_at: string,
+}
+
 export function CreateActivityModal({
     closeCreateActivityModal
 } : CreateActivityModalProps) {
     const { tripId } = useParams()
+    const [trip, setTrip] = useState<Trip | undefined>()
+    const [isInvalidDate, setIsInvalidDate] = useState(false)
+    const [title, setTitle] = useState('')
+    const [occurs_at, setOccursAt] = useState('')
+    const [description, setDescription] = useState('')
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        if (name === 'title') setTitle(value)
+        if (name === 'occurs_at') setOccursAt(value)
+        if (name === 'description') setDescription(value)
+    }
+
+    useEffect(() => {
+        api.get(`/trips/${tripId}`).then(response => setTrip(response.data.trip)
+        )
+    }, [tripId])
+
+    
+    
 
     async function createActivity(e: FormEvent<HTMLFormElement>) {
         e.preventDefault()
     
-        const data = new FormData(e.currentTarget)
+        if (!title && !occurs_at) {
+            return
+        }
+
+        const activityDate = new Date(occurs_at).toISOString();
+        const currentDate = new Date().toISOString();
+        const tripStartDate = trip?.starts_at.slice(0, 10)
+        const tripEndDate = trip?.ends_at.slice(0, 10)
+        
     
-        const title = data.get('title')?.toString()
-        const occurs_at = data.get('occurs_at')?.toString()
-        const description = data.get('description')?.toString()
+        if (activityDate < currentDate ) {
+            setIsInvalidDate(true)
+            setTimeout(() => setIsInvalidDate(false), 1200)
+            return
+        }
+
+        if (tripStartDate === undefined || tripEndDate === undefined) {
+            return
+        }
+
+        if (activityDate.slice(0, 10) < tripStartDate) {
+            alert('Por favor verifique a data de início da viagem!')
+            return
+        }
+
+        if (activityDate.slice(0, 10) > tripEndDate) {
+            alert('Por favor verifique a data do término da viagem!')
+            return
+        }
+        
         
         await api.post(`/trips/${tripId}/activities`, {
             title,
             occurs_at,
             description,
         })
+        
 
+        closeCreateActivityModal()
         window.document.location.reload()
 
     }
+
+    const isFormValid = title && occurs_at
 
     return (
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center px-4 md:px-0'>
@@ -57,7 +111,10 @@ export function CreateActivityModal({
                             <div className='h-14 px-4 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center gap-2'>
                                 <Tag className='text-zinc-400 size-5' />
                                 <input 
-                                name='title' 
+                                name='title'
+                                value={title}
+                                onChange={handleChange}
+                                minLength={4}
                                 placeholder="Qual a atividade?" className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1" 
                                 />
                             </div>
@@ -65,7 +122,9 @@ export function CreateActivityModal({
                             <div className='h-14 px-4 bg-zinc-950 border border-zinc-800 rounded-lg flex items-center gap-2'>
                                 <NotebookPen className='text-zinc-400 size-5' />
                                 <input 
-                                name='description' 
+                                name='description'
+                                value={description}
+                                onChange={handleChange}
                                 placeholder="Descrição da atividade" className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1" 
                                 />
                             </div>
@@ -75,13 +134,22 @@ export function CreateActivityModal({
                                 <input
                                 type="datetime-local"
                                 name='occurs_at'
+                                value={occurs_at}
+                                onChange={handleChange}
                                 placeholder="Data e horário da atividade" className="bg-transparent text-lg placeholder-zinc-400 outline-none flex-1"
                                 />
                             </div>
-                            
-                            <Button variant="primary" size="full">
-                                Salvar atividade
-                            </Button>
+
+                            {!isFormValid ? (
+                                <Button disabled={!isFormValid} variant="secondary" size="full">
+                                    Insira as informações restantes
+                                </Button>
+                            ) : (
+                                <Button variant={isInvalidDate ? "alert" : "primary"} size="full">
+                                    {isInvalidDate ? "Data inválida!" : "Salvar atividade"}
+                                </Button>
+                            )}
+
                         </form>
                     </div>
                 </div>
