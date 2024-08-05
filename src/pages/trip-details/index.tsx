@@ -38,9 +38,9 @@ export function TripDetailsPage() {
 
                 <div className='w-full h-px lg:hidden bg-zinc-800' />
 
-                <div className="md:flex lg:block lg:space-y-6 lg:w-80">
+                <div className="space-y-10 lg:block lg:space-y-6 lg:w-80">
                     <ImportantLinks />
-                    <div className='w-full h-px bg-zinc-800 md:w-0 md:h-0 lg:w-full lg:h-px' />
+                    <div className='w-full h-px bg-zinc-800 lg:w-full lg:h-px' />
                     <Guests />
                 </div>
             </main>

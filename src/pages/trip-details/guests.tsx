@@ -21,12 +21,12 @@ export function Guests() {
     }, [tripId])
     
     return (
-        <div className="space-y-6 md:p-2 md:max-w-[40%] lg:p-0 lg:max-w-[100%]">
+        <div className="space-y-6 lg:max-w-[100%]">
             <h2 className="font-semibold text-xl">Convidados</h2>
-            <div className="space-y-5">
+            <div className="space-y-5 sm:flex sm:flex-row sm:flex-wrap justify-between lg:block">
                 {participants.map((participant, index) => {
                     return (
-                        <div key={participant.id} className="flex items-center justify-between gap-4">
+                        <div key={participant.id} className="flex items-center justify-between gap-4 sm:min-w-[45%] md:min-w-[40%] lg:min-w-[100%]">
                             <div className="space-y-1.5">
                                 <span className="block font-medium text-zinc-100">
                                     {participant.name ?? `Convidado ${index}`}

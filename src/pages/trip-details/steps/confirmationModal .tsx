@@ -28,6 +28,10 @@ export function ConfirmationModal({
 
     const titleMessage = actionType === 'complete' ?  'Concluir Atividade?' : 'Anular conclusão da Atividade?'
 
+    const buttonMessage = actionType === 'complete' ?  'Confirmar' : 'Desmarcar'
+
+    const backgroundTypeButton = actionType == 'complete' ? 'primary' : 'alert'
+
     return (
         <div className='fixed inset-0 bg-black/60 flex items-center justify-center px-4 md:px-0'>
             <div className='w-[400px] rounded-xl py-5 px-6 shadow-shape bg-zinc-900 space-y-5'>
@@ -42,7 +46,7 @@ export function ConfirmationModal({
                 </p>
                 <div className='flex justify-between gap-3'>
                     <Button variant="secondary" onClick={onCancel}>Cancelar</Button>
-                    <Button variant="primary" onClick={onConfirm}>Confirmar</Button>
+                    <Button variant={backgroundTypeButton} onClick={onConfirm}>{buttonMessage}</Button>
                 </div>
             </div>
         </div>

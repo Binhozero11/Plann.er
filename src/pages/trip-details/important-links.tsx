@@ -3,7 +3,7 @@ import { Button } from "../../components/button";
 
 export function ImportantLinks() {
     return (
-        <div className="space-y-6 md:p-2 md:max-w-[60%] lg:p-0 lg:max-w-[100%]">
+        <div className="space-y-6 lg:max-w-[100%]">
             <h2 className="font-semibold text-xl">Links importantes</h2>
             <div className="space-y-5">
                 <div className="flex items-center justify-between gap-4">
